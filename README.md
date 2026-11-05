@@ -1,19 +1,19 @@
-# VizMon RAG Support Agent: Documentation Q&A for HPC Monitoring
+# RAG Support Agent for HPC Monitoring Documentation
 
-[![Project Page](https://img.shields.io/badge/Project-Page-green)](https://vizmon.vercel.app)
-[![Paper DOI](https://img.shields.io/badge/DOI-10.3233%2FFAIA260739-blue)](https://doi.org/10.3233/FAIA260739)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
-
-[Project Page](https://vizmon.vercel.app) · [Paper](https://doi.org/10.3233/FAIA260739) · [Visualization Agent](https://github.com/JohnnyPearl/text2sql2chart)
 
 ## Overview
 
 This repository is a modular retrieval-augmented generation (RAG) service that answers questions about a PDF corpus, such as a system's user manual and technical reports. Answers stream over a Server-Sent Events (SSE) endpoint, and every answer comes with page-level citations naming the source document, page and section.
 
-In VizMon, the agent lets operators ask how the monitoring system works: how to configure it, what a component does, or how to read a dashboard. It complements the [visualization agent](https://github.com/JohnnyPearl/text2sql2chart), which answers questions about the telemetry itself.
+In an HPC monitoring tool, the agent lets operators ask how the system works: how to configure it, what a component does, or how to read a dashboard. It complements the [visualization agent](https://github.com/JohnnyPearl/text2sql2chart), which answers questions about the telemetry itself.
 
 All ingested documents share a single Qdrant collection. Retrieval searches across all of them, and each citation names the document it came from.
+
+## Context
+
+This agent was built as part of my bachelor's thesis, *Developing a Smart Monitoring Tool for High-Performance Computing Systems*, at Ho Chi Minh City University of Technology (HCMUT), 2026. It was developed alongside the [natural-language visualization agent](https://github.com/JohnnyPearl/text2sql2chart), whose design is published at SoMeT 2026.
 
 ## Pipeline
 
@@ -163,25 +163,6 @@ The seams are the `Protocol` classes:
 | Reranking                      | replace `PassthroughReranker` in `app/retrieval/reranker.py` |
 | Other source formats           | new parser implementing `DocumentParser`                    |
 | Agentic loops (rewrite, retry) | add nodes/edges in `app/generation/graph.py` and switch the route to `graph.astream_events` |
-
-## Citation
-
-This agent is part of the VizMon system described in the paper below. If you use this code, please cite:
-
-```bibtex
-@inproceedings{dang2026vizmon,
-  title     = {A Smart Monitoring Architecture for {HPC} Clusters with an {AI}-Powered Natural Language Visualization Agent},
-  author    = {Dang, Ngoc-Phu and Le, Khanh and Nguyen, Viet-Hung and Pham, Thai-An and La-Quoc, Nhut-Huan and Thoai, Nam},
-  booktitle = {New Trends in Intelligent Software Methodologies, Tools and Techniques (SoMeT 2026)},
-  editor    = {Fujita, Hamido and Selamat, Ali and Mohamed, Farhan},
-  series    = {Frontiers in Artificial Intelligence and Applications},
-  volume    = {430},
-  pages     = {193--202},
-  publisher = {IOS Press},
-  year      = {2026},
-  doi       = {10.3233/FAIA260739}
-}
-```
 
 ## Acknowledgments
 
