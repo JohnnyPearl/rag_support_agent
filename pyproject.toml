@@ -1,0 +1,47 @@
+[project]
+name = "rag-fastapi"
+version = "0.1.0"
+description = "VizMon RAG support agent: documentation Q&A over PDFs for HPC monitoring, with streamed answers and page-level citations"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [
+    { name = "Ngoc-Phu Dang" },
+]
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "openai>=1.55",
+    "qdrant-client>=1.12",
+    "pymupdf4llm>=0.0.17",
+    "langgraph>=0.2.50",
+    "tiktoken>=0.8",
+    "sse-starlette>=2.1",
+    "python-dotenv>=1.0",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.7",
+]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
