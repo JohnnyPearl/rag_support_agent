@@ -17,19 +17,29 @@ All ingested documents share a single Qdrant collection. Retrieval searches acro
 
 ## Pipeline
 
-```
- Ingestion (offline, scripts/ingest.py)
- ──────────────────────────────────────
-   PDF ──► pymupdf4llm parse ──► chunk ──► embed ──────────────────► Qdrant
-          (Markdown + headings   (hierarchical,  (text-embedding-3-small,  (local,
-           + page numbers)        token-sized)    1536-dim)                 file-backed)
+```mermaid
+flowchart TB
+    subgraph ingest["Ingestion (offline) · scripts/ingest.py"]
+        direction LR
+        pdf[/"PDF files"/] --> parse["Parse<br/>pymupdf4llm → Markdown<br/>with headings, page numbers"]
+        parse --> chunk["Chunk<br/>hierarchical, token-sized"]
+        chunk --> embedDocs["Embed<br/>text-embedding-3-small<br/>1536-dim"]
+    end
 
- Question answering (online, POST /ask)
- ──────────────────────────────────────
-   question ──► embed ──► retrieve (Qdrant, top-k) ──► rerank ──► prompt
-                                                                    │
-                                                                    ▼
-   SSE: citation event + token events + done  ◄── gpt-4o-mini (streamed)
+    qdrant[("Qdrant<br/>local, file-backed")]
+
+    subgraph qa["Question answering (online) · POST /ask"]
+        direction LR
+        question[/"Question"/] --> embedQuery["Embed query"]
+        embedQuery --> retrieve["Retrieve<br/>top-k"]
+        retrieve --> rerank["Rerank"]
+        rerank --> prompt["Build prompt"]
+        prompt --> llm["gpt-4o-mini<br/>streamed"]
+        llm --> sse[/"SSE response<br/>citations, tokens, done"/]
+    end
+
+    ingest -- "upsert vectors" --> qdrant
+    qdrant -- "vector search" --> qa
 ```
 
 ## Stack
